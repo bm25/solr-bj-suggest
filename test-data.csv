@@ -1,0 +1,11 @@
+id,_version_,BRAND,_root_,SCOPE,PRODUCT_TYPE,COLOR,SIZE
+12,,,10,upc,,Pink,XL
+11,,,10,upc,,Red,XL
+10,-1,Nike,10,parent,sneakers,,
+42,,,40,upc,,Pink,L
+41,,,40,upc,,Red,M
+40,-1,Calvin Klein,40,parent,jeans,,
+53,,,50,upc,,Blue,M
+52,,,50,upc,,Green,L
+51,,,50,upc,,Red,XXXL
+50,-1,Calvin Klein Jeans,50,parent,jeans,,
