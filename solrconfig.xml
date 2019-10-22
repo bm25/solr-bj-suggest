@@ -17,7 +17,6 @@
     <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-velocity-\d.*\.jar" />
 
     <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-bjq-suggest-1.0-SNAPSHOT.jar" />
-    <!--lib dir="${solr.install.dir:../../../..}/dist/" regex="gd-bjq-suggest-1.0-SNAPSHOT.jar" /-->
 
     <dataDir>${solr.data.dir:}</dataDir>
 
@@ -125,12 +124,6 @@
         </lst>
     </queryParser>
 
-    <requestHandler name="/dataimport" class="solr.DataImportHandler">
-        <lst name="defaults">
-            <str name="config">db-data-config.xml</str>
-        </lst>
-    </requestHandler>
-
     <requestHandler name="/select" class="solr.SearchHandler">
 
         <lst name="defaults">
@@ -168,204 +161,11 @@
         </lst>
     </requestHandler>
 
-    <initParams path="/update/**,/query,/select,/tvrh,/elevate,/spell,/browse">
+    <initParams path="/update/**,/query,/select,/browse">
         <lst name="defaults">
             <str name="df">text</str>
         </lst>
     </initParams>
-
-
-    <requestHandler name="/update/extract"
-                    startup="lazy"
-                    class="solr.extraction.ExtractingRequestHandler" >
-        <lst name="defaults">
-            <str name="lowernames">true</str>
-            <str name="uprefix">ignored_</str>
-
-            <str name="captureAttr">true</str>
-            <str name="fmap.a">links</str>
-            <str name="fmap.div">ignored_</str>
-        </lst>
-    </requestHandler>
-
-
-    <searchComponent name="spellcheck" class="solr.SpellCheckComponent">
-
-        <str name="queryAnalyzerFieldType">text_general</str>
-
-        <lst name="spellchecker">
-            <str name="name">default</str>
-            <str name="field">text</str>
-            <str name="classname">solr.DirectSolrSpellChecker</str>
-            <str name="distanceMeasure">internal</str>
-            <float name="accuracy">0.5</float>
-            <int name="maxEdits">2</int>
-            <int name="minPrefix">1</int>
-            <int name="maxInspections">5</int>
-            <int name="minQueryLength">4</int>
-            <float name="maxQueryFrequency">0.01</float>
-
-        </lst>
-
-        <lst name="spellchecker">
-            <str name="name">wordbreak</str>
-            <str name="classname">solr.WordBreakSolrSpellChecker</str>
-            <str name="field">name</str>
-            <str name="combineWords">true</str>
-            <str name="breakWords">true</str>
-            <int name="maxChanges">10</int>
-        </lst>
-
-    </searchComponent>
-
-    <requestHandler name="/spell" class="solr.SearchHandler" startup="lazy">
-        <lst name="defaults">
-            <str name="df">text</str>
-            <str name="spellcheck.dictionary">default</str>
-            <str name="spellcheck.dictionary">wordbreak</str>
-            <str name="spellcheck">on</str>
-            <str name="spellcheck.extendedResults">true</str>
-            <str name="spellcheck.count">10</str>
-            <str name="spellcheck.alternativeTermCount">5</str>
-            <str name="spellcheck.maxResultsForSuggest">5</str>
-            <str name="spellcheck.collate">true</str>
-            <str name="spellcheck.collateExtendedResults">true</str>
-            <str name="spellcheck.maxCollationTries">10</str>
-            <str name="spellcheck.maxCollations">5</str>
-        </lst>
-        <arr name="last-components">
-            <str>spellcheck</str>
-        </arr>
-    </requestHandler>
-
-    <searchComponent name="suggest" class="solr.SuggestComponent">
-        <lst name="suggester">
-            <str name="name">mySuggester</str>
-            <str name="lookupImpl">FuzzyLookupFactory</str>
-            <str name="dictionaryImpl">DocumentDictionaryFactory</str>
-            <str name="field">cat</str>
-            <str name="weightField">price</str>
-            <str name="suggestAnalyzerFieldType">string</str>
-        </lst>
-    </searchComponent>
-
-    <requestHandler name="/suggest" class="solr.SearchHandler" startup="lazy">
-        <lst name="defaults">
-            <str name="suggest">true</str>
-            <str name="suggest.count">10</str>
-        </lst>
-        <arr name="components">
-            <str>suggest</str>
-        </arr>
-    </requestHandler>
-
-    <searchComponent name="tvComponent" class="solr.TermVectorComponent"/>
-
-    <requestHandler name="/tvrh" class="solr.SearchHandler" startup="lazy">
-        <lst name="defaults">
-            <str name="df">text</str>
-            <bool name="tv">true</bool>
-        </lst>
-        <arr name="last-components">
-            <str>tvComponent</str>
-        </arr>
-    </requestHandler>
-
-    <searchComponent name="terms" class="solr.TermsComponent"/>
-
-    <requestHandler name="/terms" class="solr.SearchHandler" startup="lazy">
-        <lst name="defaults">
-            <bool name="terms">true</bool>
-            <bool name="distrib">false</bool>
-        </lst>
-        <arr name="components">
-            <str>terms</str>
-        </arr>
-    </requestHandler>
-
-
-    <requestHandler name="/elevate" class="solr.SearchHandler" startup="lazy">
-        <lst name="defaults">
-            <str name="echoParams">explicit</str>
-            <str name="df">text</str>
-        </lst>
-        <arr name="last-components">
-            <str>elevator</str>
-        </arr>
-    </requestHandler>
-
-    <searchComponent class="solr.HighlightComponent" name="highlight">
-        <highlighting>
-            <fragmenter name="gap"
-                        default="true"
-                        class="solr.highlight.GapFragmenter">
-                <lst name="defaults">
-                    <int name="hl.fragsize">100</int>
-                </lst>
-            </fragmenter>
-
-            <fragmenter name="regex"
-                        class="solr.highlight.RegexFragmenter">
-                <lst name="defaults">
-
-                    <int name="hl.fragsize">70</int>
-
-                    <float name="hl.regex.slop">0.5</float>
-
-                    <str name="hl.regex.pattern">[-\w ,/\n\&quot;&apos;]{20,200}</str>
-                </lst>
-            </fragmenter>
-
-            <formatter name="html"
-                       default="true"
-                       class="solr.highlight.HtmlFormatter">
-                <lst name="defaults">
-                    <str name="hl.simple.pre"><![CDATA[<em>]]></str>
-                    <str name="hl.simple.post"><![CDATA[</em>]]></str>
-                </lst>
-            </formatter>
-
-            <encoder name="html"
-                     class="solr.highlight.HtmlEncoder" />
-
-            <fragListBuilder name="simple"
-                             class="solr.highlight.SimpleFragListBuilder"/>
-
-            <fragListBuilder name="single"
-                             class="solr.highlight.SingleFragListBuilder"/>
-
-            <fragListBuilder name="weighted"
-                             default="true"
-                             class="solr.highlight.WeightedFragListBuilder"/>
-
-            <fragmentsBuilder name="default"
-                              default="true"
-                              class="solr.highlight.ScoreOrderFragmentsBuilder">
-
-            </fragmentsBuilder>
-
-
-
-            <boundaryScanner name="default"
-                             default="true"
-                             class="solr.highlight.SimpleBoundaryScanner">
-                <lst name="defaults">
-                    <str name="hl.bs.maxScan">10</str>
-                    <str name="hl.bs.chars">.,!? &#9;&#10;&#13;</str>
-                </lst>
-            </boundaryScanner>
-
-            <boundaryScanner name="breakIterator"
-                             class="solr.highlight.BreakIteratorBoundaryScanner">
-                <lst name="defaults">
-
-                    <str name="hl.bs.type">WORD</str>
-                    <str name="hl.bs.language">en</str>
-                    <str name="hl.bs.country">US</str>
-                </lst>
-            </boundaryScanner>
-        </highlighting>
-    </searchComponent>
 
     <queryResponseWriter name="json" class="solr.JSONResponseWriter">
         <str name="content-type">text/plain; charset=UTF-8</str>
