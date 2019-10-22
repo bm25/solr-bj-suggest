@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema name="dictionary" version="1.6">
+
+    <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true" omitTermFreqAndPositions="true"/>
+
+    <fieldType name="text" class="solr.TextField" sortMissingLast="true">
+        <analyzer type="index">
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" />
+            <filter class="solr.EnglishPossessiveFilterFactory" />
+            <filter class="solr.ASCIIFoldingFilterFactory"/>
+            <filter class="solr.LowerCaseFilterFactory" />
+        </analyzer>
+        <analyzer type="query">
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" />
+            <filter class="solr.EnglishPossessiveFilterFactory" />
+            <filter class="solr.ASCIIFoldingFilterFactory"/>
+            <filter class="solr.LowerCaseFilterFactory" />
+        </analyzer>
+    </fieldType>
+
+    <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true" omitTermFreqAndPositions="true"/>
+    <fieldType name="tint" class="solr.TrieIntField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
+    <fieldType name="plong" class="solr.LongPointField" docValues="true"/>
+
+
+
+    <field name="_root_" type="string" indexed="true" stored="true" multiValued="false" required="false"/>
+    <field name="_version_" type="string" indexed="true" stored="true" multiValued="false"/>
+    <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" />
+    <field name="type" type="text" indexed="true" stored="true" multiValued="false"/>
+    <field name="SCOPE" type="string" indexed="true" stored="true" multiValued="false"/>
+    <field name="BRAND" type="text" indexed="true" stored="true" multiValued="false"/>
+    <field name="PRODUCT_TYPE" type="text" indexed="true" stored="true" multiValued="false"/>
+    <field name="COLOR" type="text" indexed="true" stored="true" multiValued="false"/>
+    <field name="SIZE" type="text" indexed="true" stored="true" multiValued="false"/>
+
+    <dynamicField name="store_*" type="tint" indexed="true" stored="true" docValues="true"/>
+
+    <uniqueKey>id</uniqueKey>
+
+</schema>
