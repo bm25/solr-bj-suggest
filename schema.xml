@@ -22,7 +22,8 @@
     </fieldType>
 
     <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true" omitTermFreqAndPositions="true"/>
-    <fieldType name="tint" class="solr.TrieIntField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
+    <!--fieldType name="tint" class="solr.TrieIntField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/-->
+    <fieldType name="tint" class="solr.IntPointField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
     <fieldType name="plong" class="solr.LongPointField" docValues="true"/>
 
 

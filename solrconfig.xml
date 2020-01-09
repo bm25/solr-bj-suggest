@@ -16,6 +16,7 @@
     <lib dir="${solr.install.dir:../../../..}/contrib/velocity/lib" regex=".*\.jar" />
     <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-velocity-\d.*\.jar" />
 
+    <!--lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-bjq-suggest-1.0-SNAPSHOT.jar" /-->
     <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-bjq-suggest-1.0-SNAPSHOT.jar" />
 
     <dataDir>${solr.data.dir:}</dataDir>
@@ -129,7 +130,8 @@
         <lst name="defaults">
             <str name="echoParams">explicit</str>
             <int name="rows">10</int>
-            <str name="df">edismax</str>
+            <!--str name="df">edismax</str-->
+            <str name="df">text</str>
         </lst>
     </requestHandler>
 
